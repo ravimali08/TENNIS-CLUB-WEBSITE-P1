@@ -1,0 +1,274 @@
+<!doctype html>
+<html lang="en">
+  <head>
+<script>
+(function() {
+  const originalFetch = window.fetch;
+  
+  // Initialize mock stores in localStorage if not exists
+  if (!localStorage.getItem('ace_reserve_bookings')) {
+    localStorage.setItem('ace_reserve_bookings', JSON.stringify([
+      {
+        id: 101,
+        booking_id: 'CRT-A1B2C3',
+        court_name: 'Clay Court 1',
+        date: '2026-06-26',
+        start_time: '14:00',
+        end_time: '15:00',
+        created_at: '2026-06-25T10:00:00Z',
+        email: 'demo@acereserve.com'
+      }
+    ]));
+  }
+  if (!localStorage.getItem('ace_reserve_event_regs')) {
+    localStorage.setItem('ace_reserve_event_regs', JSON.stringify([
+      {
+        id: 201,
+        ticket_id: 'ACE-X9Y8Z7',
+        events: { title: "Summer Members' Mixer" },
+        created_at: '2026-06-25T11:30:00Z',
+        email: 'demo@acereserve.com'
+      }
+    ]));
+  }
+  if (!localStorage.getItem('ace_reserve_tournament_regs')) {
+    localStorage.setItem('ace_reserve_tournament_regs', JSON.stringify([
+      {
+        id: 301,
+        pass_id: 'TRN-P5Q4R3',
+        tournaments: { name: 'Elite Invitational' },
+        created_at: '2026-06-25T12:15:00Z',
+        email: 'demo@acereserve.com'
+      }
+    ]));
+  }
+  if (!localStorage.getItem('ace_reserve_program_regs')) {
+    localStorage.setItem('ace_reserve_program_regs', JSON.stringify([
+      {
+        id: 401,
+        pass_id: 'PRG-K7L8M9',
+        coaching_programs: { title: 'Elite Performance Program' },
+        created_at: '2026-06-25T09:00:00Z',
+        email: 'demo@acereserve.com'
+      }
+    ]));
+  }
+  
+  window.fetch = async function(url, options) {
+    let urlStr = typeof url === 'string' ? url : url.url;
+    const urlObj = new URL(urlStr, window.location.origin);
+    const pathname = urlObj.pathname;
+    
+    // Helper to fetch static json data
+    const fetchStaticJson = async (path) => {
+      const resp = await originalFetch(path);
+      if (!resp.ok) throw new Error('Failed to fetch ' + path);
+      return resp.json();
+    };
+    
+    // Intercept member dashboard GET
+    if (pathname === '/api/member-dashboard') {
+      const email = urlObj.searchParams.get('email') || 'demo@acereserve.com';
+      const bookings = JSON.parse(localStorage.getItem('ace_reserve_bookings') || '[]');
+      const events = JSON.parse(localStorage.getItem('ace_reserve_event_regs') || '[]');
+      const tournaments = JSON.parse(localStorage.getItem('ace_reserve_tournament_regs') || '[]');
+      const programs = JSON.parse(localStorage.getItem('ace_reserve_program_regs') || '[]');
+      
+      const userBookings = bookings.filter(b => b.email.toLowerCase() === email.toLowerCase());
+      const userEvents = events.filter(e => e.email.toLowerCase() === email.toLowerCase());
+      const userTournaments = tournaments.filter(t => t.email.toLowerCase() === email.toLowerCase());
+      const userPrograms = programs.filter(p => p.email.toLowerCase() === email.toLowerCase());
+      
+      return new Response(JSON.stringify({
+        email: email,
+        bookings: userBookings,
+        events: userEvents,
+        tournaments: userTournaments,
+        programs: userPrograms
+      }), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+    
+    // Intercept court bookings GET
+    if (pathname === '/api/court-bookings' && (!options || options.method === 'GET' || options.method === undefined)) {
+      const date = urlObj.searchParams.get('date');
+      const courtId = parseInt(urlObj.searchParams.get('court_id'));
+      const bookings = JSON.parse(localStorage.getItem('ace_reserve_bookings') || '[]');
+      const filtered = bookings.filter(b => b.date === date && b.court_id === courtId);
+      return new Response(JSON.stringify(filtered), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+    
+    // Intercept court bookings POST
+    if (pathname === '/api/court-bookings' && options && options.method === 'POST') {
+      const body = JSON.parse(options.body);
+      const bookings = JSON.parse(localStorage.getItem('ace_reserve_bookings') || '[]');
+      const newBooking = {
+        id: bookings.length + 1,
+        booking_id: 'CRT-' + Math.random().toString(36).substring(2, 8).toUpperCase(),
+        created_at: new Date().toISOString(),
+        email: body.email || 'demo@acereserve.com',
+        ...body
+      };
+      bookings.push(newBooking);
+      localStorage.setItem('ace_reserve_bookings', JSON.stringify(bookings));
+      return new Response(JSON.stringify(newBooking), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+    
+    // Intercept event registrations POST
+    if (pathname === '/api/event-registrations' && options && options.method === 'POST') {
+      const body = JSON.parse(options.body);
+      const eventTitle = body.event_title || 'Club Event';
+      
+      const eventRegs = JSON.parse(localStorage.getItem('ace_reserve_event_regs') || '[]');
+      const newReg = {
+        id: eventRegs.length + 1,
+        ticket_id: 'ACE-' + Math.random().toString(36).substring(2, 8).toUpperCase(),
+        events: { title: eventTitle },
+        created_at: new Date().toISOString(),
+        email: body.email || 'demo@acereserve.com',
+        ...body
+      };
+      eventRegs.push(newReg);
+      localStorage.setItem('ace_reserve_event_regs', JSON.stringify(eventRegs));
+      return new Response(JSON.stringify(newReg), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+    
+    // Intercept tournament registrations POST
+    if (pathname === '/api/tournament-registrations' && options && options.method === 'POST') {
+      const body = JSON.parse(options.body);
+      const tournamentName = body.tournament_name || 'Club Tournament';
+      
+      const tournamentRegs = JSON.parse(localStorage.getItem('ace_reserve_tournament_regs') || '[]');
+      const newReg = {
+        id: tournamentRegs.length + 1,
+        pass_id: 'TRN-' + Math.random().toString(36).substring(2, 8).toUpperCase(),
+        tournaments: { name: tournamentName },
+        created_at: new Date().toISOString(),
+        email: body.email || 'demo@acereserve.com',
+        ...body
+      };
+      tournamentRegs.push(newReg);
+      localStorage.setItem('ace_reserve_tournament_regs', JSON.stringify(tournamentRegs));
+      return new Response(JSON.stringify(newReg), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+    
+    // Intercept contact submissions POST
+    if (pathname === '/api/contacts' && options && options.method === 'POST') {
+      return new Response(JSON.stringify({ success: true, message: 'Message sent successfully!' }), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+    
+    // Intercept GET requests with query parameters for static JSON resources
+    if (pathname === '/api/events') {
+      const id = urlObj.searchParams.get('id');
+      const list = await fetchStaticJson('/api/events.json');
+      if (id) {
+        const item = list.find(x => x.id === parseInt(id));
+        return new Response(JSON.stringify(item), { status: 200, headers: { 'Content-Type': 'application/json' } });
+      }
+      return new Response(JSON.stringify(list), { status: 200, headers: { 'Content-Type': 'application/json' } });
+    }
+    
+    if (pathname === '/api/coaches') {
+      const id = urlObj.searchParams.get('id');
+      const slug = urlObj.searchParams.get('slug');
+      const list = await fetchStaticJson('/api/coaches.json');
+      if (id) {
+        const item = list.find(x => x.id === parseInt(id));
+        return new Response(JSON.stringify(item), { status: 200, headers: { 'Content-Type': 'application/json' } });
+      }
+      if (slug) {
+        const item = list.find(x => x.slug === slug);
+        return new Response(JSON.stringify(item), { status: 200, headers: { 'Content-Type': 'application/json' } });
+      }
+      return new Response(JSON.stringify(list), { status: 200, headers: { 'Content-Type': 'application/json' } });
+    }
+    
+    if (pathname === '/api/coaching-programs') {
+      const slug = urlObj.searchParams.get('slug');
+      const list = await fetchStaticJson('/api/coaching-programs.json');
+      if (slug) {
+        const item = list.find(x => x.slug === slug);
+        return new Response(JSON.stringify(item), { status: 200, headers: { 'Content-Type': 'application/json' } });
+      }
+      return new Response(JSON.stringify(list), { status: 200, headers: { 'Content-Type': 'application/json' } });
+    }
+    
+    if (pathname === '/api/tournaments') {
+      const id = urlObj.searchParams.get('id');
+      const ageGroup = urlObj.searchParams.get('age_group');
+      const skillLevel = urlObj.searchParams.get('skill_level');
+      const list = await fetchStaticJson('/api/tournaments.json');
+      
+      if (id) {
+        const item = list.find(x => x.id === parseInt(id));
+        return new Response(JSON.stringify(item), { status: 200, headers: { 'Content-Type': 'application/json' } });
+      }
+      
+      let filtered = list;
+      if (ageGroup && ageGroup.toLowerCase() !== 'all') {
+        filtered = filtered.filter(x => x.age_group.toLowerCase() === ageGroup.toLowerCase());
+      }
+      if (skillLevel && skillLevel.toLowerCase() !== 'all') {
+        filtered = filtered.filter(x => x.skill_level.toLowerCase() === skillLevel.toLowerCase());
+      }
+      return new Response(JSON.stringify(filtered), { status: 200, headers: { 'Content-Type': 'application/json' } });
+    }
+    
+    if (pathname === '/api/blog-posts') {
+      const slug = urlObj.searchParams.get('slug');
+      const list = await fetchStaticJson('/api/blog-posts.json');
+      if (slug) {
+        const item = list.find(x => x.slug === slug);
+        return new Response(JSON.stringify(item), { status: 200, headers: { 'Content-Type': 'application/json' } });
+      }
+      return new Response(JSON.stringify(list), { status: 200, headers: { 'Content-Type': 'application/json' } });
+    }
+    
+    // General static redirects for fallback
+    const generalStatic = ['/api/faqs', '/api/testimonials', '/api/gallery'];
+    if (generalStatic.includes(pathname)) {
+      const jsonUrl = pathname + '.json' + urlObj.search;
+      if (typeof url === 'string') {
+        return originalFetch(jsonUrl, options);
+      } else {
+        const newRequest = new Request(jsonUrl, url);
+        return originalFetch(newRequest, options);
+      }
+    }
+    
+    return originalFetch.apply(this, arguments);
+  };
+})();
+</script>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ace Reserve Tennis Club</title>
+    
+  
+  <script type="module" crossorigin src="/assets/index-ueaLBiHs.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/index-rBa7YphT.css">
+</head>
+  <body>
+    <div id="root"></div>
+      
+  
+</body>
+</html>
