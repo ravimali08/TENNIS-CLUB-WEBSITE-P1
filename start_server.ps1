@@ -1,4 +1,4 @@
-$port = 8000
+$port = 8080
 $listener = New-Object System.Net.HttpListener
 $listener.Prefixes.Add("http://localhost:$port/")
 $listener.Prefixes.Add("http://127.0.0.1:$port/")
@@ -67,6 +67,9 @@ while ($listener.IsListening) {
         }
         $response.Close()
     } catch {
-        # Catch and ignore errors like connection resets
+        Write-Host "Error in loop: $_" -ForegroundColor Red
+        if ($null -ne $response) {
+            try { $response.Close() } catch {}
+        }
     }
 }

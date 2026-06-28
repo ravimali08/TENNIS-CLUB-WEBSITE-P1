@@ -16,3 +16,53 @@
   background: rgba(2, 6, 23, 0.5) !important;
   box-shadow: 0 15px 30px -10px rgba(59, 130, 246, 0.25) !important;
 }
+
+
+/* Global 80% Zoom Scaling */
+html {
+  font-size: 80% !important;
+}
+
+/* Custom Redesign Overrides */
+@media (min-width: 768px) {
+  .md:flex {
+    display: flex !important;
+  }
+}
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px; /* scaled down from 12px */
+  padding: 9.6px 17.6px; /* scaled down from 12px 22px */
+  border-radius: 50px;
+  background: rgba(37,99,235,.12) !important;
+  border: 1px solid rgba(59,130,246,.30) !important;
+  backdrop-filter: blur(18px) !important;
+  color: #7dd3fc !important;
+  font-size: 11.2px; /* scaled down from 14px */
+  font-weight: 600;
+}
+
+.btn-solid-blue {
+  background: #2563eb !important;
+  color: #ffffff !important;
+  transition: all 0.3s ease !important;
+}
+.btn-solid-blue:hover {
+  background: #3b82f6 !important;
+  transform: translateY(-1.6px); /* scaled down */
+  box-shadow: 0 12px 32px rgba(37,99,235,.35) !important; /* scaled down */
+}
+
+.btn-outline-white {
+  background: rgba(255,255,255,.05) !important;
+  border: 1px solid rgba(255,255,255,.15) !important;
+  backdrop-filter: blur(16px) !important;
+  color: #ffffff !important;
+  transition: all 0.3s ease !important;
+}
+.btn-outline-white:hover {
+  background: rgba(255,255,255,.10) !important;
+  border-color: rgba(255,255,255,.30) !important;
+}
