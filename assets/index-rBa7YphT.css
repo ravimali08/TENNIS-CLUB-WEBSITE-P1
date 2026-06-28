@@ -66,3 +66,61 @@ html {
   background: rgba(255,255,255,.10) !important;
   border-color: rgba(255,255,255,.30) !important;
 }
+
+/* ==========================================
+   125% Visual Scaling overrides for post-hero sections
+   ========================================== */
+section:not(:first-of-type), footer {
+  font-size: 1.25em !important;
+}
+
+section:not(:first-of-type) code, footer code, section:not(:first-of-type) kbd, footer kbd, section:not(:first-of-type) samp, footer samp, section:not(:first-of-type) pre, footer pre { font-family:var(--default-mono-font-family,ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace);font-feature-settings:var(--default-mono-font-feature-settings,normal);font-variation-settings:var(--default-mono-font-variation-settings,normal);font-size:1.25em }
+section:not(:first-of-type) sub, footer sub { bottom:-0.3125em }
+section:not(:first-of-type) sup, footer sup { top:-0.625em }
+section:not(:first-of-type) .h-\[300px\], footer .h-\[300px\] { height:375px }
+section:not(:first-of-type) .h-\[400px\], footer .h-\[400px\] { height:500px }
+section:not(:first-of-type) .h-\[500px\], footer .h-\[500px\] { height:625px }
+section:not(:first-of-type) .h-px, footer .h-px { height:1.25px }
+section:not(:first-of-type) .min-h-\[110px\], footer .min-h-\[110px\] { min-height:137.5px }
+section:not(:first-of-type) .min-h-\[500px\], footer .min-h-\[500px\] { min-height:625px }
+section:not(:first-of-type) .w-\[280px\], footer .w-\[280px\] { width:350px }
+section:not(:first-of-type) .w-\[400px\], footer .w-\[400px\] { width:500px }
+section:not(:first-of-type) .w-\[500px\], footer .w-\[500px\] { width:625px }
+section:not(:first-of-type) .w-\[800px\], footer .w-\[800px\] { width:1000px }
+section:not(:first-of-type) .min-w-\[200px\], footer .min-w-\[200px\] { min-width:250px }
+section:not(:first-of-type) .min-w-\[300px\], footer .min-w-\[300px\] { min-width:375px }
+section:not(:first-of-type) .text-\[9px\], footer .text-\[9px\] { font-size:11.25px }
+section:not(:first-of-type) .text-\[10px\], footer .text-\[10px\] { font-size:12.5px }
+section:not(:first-of-type) .text-\[14px\], footer .text-\[14px\] { font-size:17.5px }
+section:not(:first-of-type) .sm\:min-w-\[340px\], footer .sm\:min-w-\[340px\] { min-width:425px }
+section:not(:first-of-type) .section-divider, footer .section-divider { background:linear-gradient(90deg,#0000,#3b82f680,#0000);height:1.25px }
+section:not(:first-of-type) .badge, footer .badge { letter-spacing:.08em;text-transform:uppercase;color:#bfdbfe;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);background:#ffffff14;border:1px solid #ffffff1f;border-radius:9999px;align-items:center;gap:0.4688rem;padding:0.5rem 1.0625rem;font-size:0.875rem;font-weight:800;display:inline-flex;box-shadow:0 2px 8px #00000026 }
+section:not(:first-of-type) .carousel-control, footer .carousel-control { -webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);color:#fff;z-index:20;background:#0f172acc;border:1px solid #ffffff1f;border-radius:9999px;justify-content:center;align-items:center;width:3.75rem;height:3.75rem;transition:all .3s;display:flex;box-shadow:0 8px 24px #0000004d }
+section:not(:first-of-type) .input-dark, footer .input-dark { color:#fff;background:#ffffff0d;border:1px solid #ffffff1a;border-radius:.75rem;padding:1.0938rem 1.25rem;transition:all .2s }
+section:not(:first-of-type) }
+
+
+/* Custom premium styles for hero cards and active state animations */
+.hero-feature-card, footer }
+
+
+/* Custom premium styles for hero cards and active state animations */
+.hero-feature-card { height:102.5px !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  background: rgba(2, 6, 23, 0.35) !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important }
+section:not(:first-of-type) }
+
+.tag, footer }
+
+.tag { display: inline-flex;
+  align-items: center;gap:12.5px; /* scaled down from 12px */
+  padding: 9.6px 17.6px; /* scaled down from 12px 22px */
+  border-radius: 50px;
+  background: rgba(37,99,235,.12) !important;
+  border: 1px solid rgba(59,130,246,.30) !important;
+  backdrop-filter: blur(18px) !important;
+  color: #7dd3fc !important;font-size:14px; /* scaled down from 14px */
+  font-weight: 600 }
